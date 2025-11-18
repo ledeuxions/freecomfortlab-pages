@@ -1,170 +1,88 @@
 /**
- * Cloudflare Worker
- * /api/ping - 헬스 체크 엔드포인트
- * /api/convert - 파일 변환 엔드포인트
+ * Cloudflare Pages 전용 Worker
+ * - /api/ping : 헬스 체크
+ * - /api/convert : 파일 변환 API (추후 Flask로 프록시 예정)
+ * - 그 외 모든 경로 : 정적 파일(ASSETS)로 포워딩
  */
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+function jsonResponse(obj, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      ...corsHeaders,
+      ...extraHeaders,
+    },
+  });
+}
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+    const method = request.method.toUpperCase();
 
-    // CORS 헤더 설정
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    };
+    // 0) CORS 프리플라이트 처리
+    if (method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
 
-    // OPTIONS 요청 처리 (CORS preflight)
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders,
+    // 1) 헬스 체크 API: /api/ping
+    if (path === "/api/ping" && method === "GET") {
+      return jsonResponse({
+        status: "ok",
+        message: "pong",
+        timestamp: new Date().toISOString(),
       });
     }
 
-    try {
-      // /api/ping 라우터
-      if (path === '/api/ping') {
-        return handlePing(corsHeaders);
-      }
+    // 2) 파일 변환 API: /api/convert (추후 Flask 서버로 프록시 예정)
+    if (path === "/api/convert" && method === "POST") {
+      // TODO: 여기에서 env 내부 변수(예: env.FLASK_ENDPOINT)를 사용해
+      //       로컬 또는 VPS Flask 서버로 프록시할 예정.
+      // 지금은 업로드만 받고 단순 응답을 돌려준다.
 
-      // /api/convert 라우터
-      if (path === '/api/convert') {
-        if (request.method !== 'POST') {
-          return new Response(
-            JSON.stringify({ error: 'Method not allowed' }),
-            {
-              status: 405,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            }
-          );
-        }
-        return await handleConvert(request, corsHeaders);
-      }
+      const contentType = request.headers.get("Content-Type") || "";
 
-      // 404 처리
-      return new Response(
-        JSON.stringify({ error: 'Not found' }),
+      // multipart/form-data, application/json 둘 다 일단 허용
+      let info = {
+        received: true,
+        contentType,
+      };
+
+      // 필요시 간단히 body 사이즈 정도만 읽어볼 수도 있음
+      // const body = await request.arrayBuffer();
+      // info.size = body.byteLength;
+
+      return jsonResponse(
         {
-          status: 404,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          status: "received",
+          info,
+          note: "실제 변환 로직은 Flask 서버 연결 후 동작 예정입니다.",
+        },
+        200,
       );
-    } catch (error) {
-      return new Response(
-        JSON.stringify({ error: 'Internal server error', message: error.message }),
+    }
+
+    // 3) 그 외 모든 요청은 Pages 정적 파일로 넘기기
+    //    => index.html, convert.html 등
+    try {
+      return await env.ASSETS.fetch(request);
+    } catch (e) {
+      // 정적 파일도 없으면 마지막으로 404 JSON
+      return jsonResponse(
         {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          error: "Not found",
+          path,
+        },
+        404,
       );
     }
   },
 };
-
-/**
- * /api/ping 핸들러
- * 헬스 체크용 엔드포인트
- */
-function handlePing(corsHeaders) {
-  return new Response(
-    JSON.stringify({
-      status: 'ok',
-      message: 'pong',
-      timestamp: new Date().toISOString(),
-    }),
-    {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
-}
-
-/**
- * /api/convert 핸들러
- * 파일 변환 처리
- */
-async function handleConvert(request, corsHeaders) {
-  try {
-    const contentType = request.headers.get('content-type') || '';
-
-    // multipart/form-data 처리
-    if (contentType.includes('multipart/form-data')) {
-      const formData = await request.formData();
-      const file = formData.get('file');
-      const format = formData.get('format') || 'jpg';
-
-      if (!file) {
-        return new Response(
-          JSON.stringify({ error: 'No file provided' }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
-      }
-
-      // 파일 정보 추출
-      const fileName = file.name;
-      const fileSize = file.size;
-      const fileType = file.type;
-
-      // 실제 변환 로직은 여기에 구현
-      // 현재는 파일 정보만 반환
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'File conversion requested',
-          file: {
-            name: fileName,
-            size: fileSize,
-            type: fileType,
-            targetFormat: format,
-          },
-          timestamp: new Date().toISOString(),
-        }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    // JSON 처리
-    if (contentType.includes('application/json')) {
-      const body = await request.json();
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Conversion request received',
-          data: body,
-          timestamp: new Date().toISOString(),
-        }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    // 지원하지 않는 Content-Type
-    return new Response(
-      JSON.stringify({ error: 'Unsupported content type' }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: 'Failed to process request', message: error.message }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
-  }
-}
