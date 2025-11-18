@@ -1,88 +1,144 @@
 /**
- * Cloudflare Pages 전용 Worker
- * - /api/ping : 헬스 체크
- * - /api/convert : 파일 변환 API (추후 Flask로 프록시 예정)
- * - 그 외 모든 경로 : 정적 파일(ASSETS)로 포워딩
+ * Cloudflare Pages _worker.js
+ * - 정적 파일 서빙 (index.html, convert.html 등)
+ * - /api/ping : 상태 확인
+ * - /api/convert : 업로드 파일 메타데이터 분석 (파일명/용량/타입)
  */
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
 };
-
-function jsonResponse(obj, status = 200, extraHeaders = {}) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      ...corsHeaders,
-      ...extraHeaders,
-    },
-  });
-}
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const path = url.pathname;
-    const method = request.method.toUpperCase();
+    const pathname = url.pathname || '/';
 
-    // 0) CORS 프리플라이트 처리
-    if (method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: corsHeaders });
-    }
-
-    // 1) 헬스 체크 API: /api/ping
-    if (path === "/api/ping" && method === "GET") {
-      return jsonResponse({
-        status: "ok",
-        message: "pong",
-        timestamp: new Date().toISOString(),
+    // CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: CORS_HEADERS,
       });
     }
 
-    // 2) 파일 변환 API: /api/convert (추후 Flask 서버로 프록시 예정)
-    if (path === "/api/convert" && method === "POST") {
-      // TODO: 여기에서 env 내부 변수(예: env.FLASK_ENDPOINT)를 사용해
-      //       로컬 또는 VPS Flask 서버로 프록시할 예정.
-      // 지금은 업로드만 받고 단순 응답을 돌려준다.
-
-      const contentType = request.headers.get("Content-Type") || "";
-
-      // multipart/form-data, application/json 둘 다 일단 허용
-      let info = {
-        received: true,
-        contentType,
-      };
-
-      // 필요시 간단히 body 사이즈 정도만 읽어볼 수도 있음
-      // const body = await request.arrayBuffer();
-      // info.size = body.byteLength;
+    // API 라우트
+    if (pathname.startsWith('/api/')) {
+      if (pathname === '/api/ping') {
+        return handlePing(request);
+      }
+      if (pathname === '/api/convert') {
+        return handleConvert(request);
+      }
 
       return jsonResponse(
-        {
-          status: "received",
-          info,
-          note: "실제 변환 로직은 Flask 서버 연결 후 동작 예정입니다.",
-        },
-        200,
-      );
-    }
-
-    // 3) 그 외 모든 요청은 Pages 정적 파일로 넘기기
-    //    => index.html, convert.html 등
-    try {
-      return await env.ASSETS.fetch(request);
-    } catch (e) {
-      // 정적 파일도 없으면 마지막으로 404 JSON
-      return jsonResponse(
-        {
-          error: "Not found",
-          path,
-        },
+        { error: 'Not Found', path: pathname },
         404,
       );
     }
+
+    // 그 외는 정적 자산 (Pages 빌드 결과) 서빙
+    return env.ASSETS.fetch(request, env, ctx);
   },
 };
+
+/**
+ * /api/ping 헬스 체크
+ */
+function handlePing(request) {
+  return jsonResponse({
+    status: 'ok',
+    message: 'pong',
+    timestamp: new Date().toISOString(),
+  });
+}
+
+/**
+ * /api/convert
+ * - formData에서 file 필드를 꺼내서
+ *   파일 이름 / 용량 / 타입을 읽어서 반환
+ * - 아직 실제 변환은 하지 않음 (다음 단계에서 Flask/FFmpeg 연결)
+ */
+async function handleConvert(request) {
+  if (request.method !== 'POST') {
+    return jsonResponse(
+      { error: 'Method Not Allowed', allow: 'POST' },
+      405,
+    );
+  }
+
+  let formData;
+  try {
+    formData = await request.formData();
+  } catch (e) {
+    return jsonResponse(
+      { error: 'Invalid form data', detail: String(e) },
+      400,
+    );
+  }
+
+  const file = formData.get('file');
+
+  if (!file) {
+    return jsonResponse(
+      { error: 'file 필드가 없습니다. <input name="file">를 확인하세요.' },
+      400,
+    );
+  }
+
+  // Cloudflare Workers의 File 객체
+  // name / type / size 를 우선 시도하고,
+  // size가 없으면 arrayBuffer 길이로 계산
+  let size = 0;
+  let type = '';
+  let name = '';
+
+  try {
+    name = file.name || 'unknown';
+    type = file.type || 'application/octet-stream';
+
+    if (typeof file.size === 'number') {
+      size = file.size;
+    } else {
+      const buf = await file.arrayBuffer();
+      size = buf.byteLength;
+    }
+  } catch (e) {
+    return jsonResponse(
+      {
+        error: '파일 메타데이터를 읽는 중 오류',
+        detail: String(e),
+      },
+      500,
+    );
+  }
+
+  const result = {
+    status: 'ok',
+    received: true,
+    file: {
+      name,
+      size,
+      type,
+    },
+    note:
+      '현재는 파일 메타데이터만 확인합니다. 다음 단계에서 Flask 서버 + FFmpeg로 실제 변환을 붙일 예정입니다.',
+  };
+
+  return jsonResponse(result, 200);
+}
+
+/**
+ * JSON 응답 헬퍼
+ */
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      ...CORS_HEADERS,
+    },
+  });
+}
