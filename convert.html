@@ -105,7 +105,7 @@
 
     <h1>파일 변환 실험실</h1>
     <div class="sub-text">
-      1차 버전 – UI 배대 상태. 아직 실제 변환 서버와 연결 전입니다.
+      1차 버전 – UI 베이스 상태. 실제 변환은 이제부터 붙여 나갑니다.
     </div>
 
     <!-- 파일 업로드 & 옵션 카드 -->
@@ -113,8 +113,8 @@
 
       <div class="label">파일 업로드 & 포맷 선택</div>
       <div class="hint">
-        아래 UI는 나중에 Flask 변환 서버와 Cloudflare Worker가 연결됩니다.<br />
-        지금은 “요청하기” 단계이며 실제 변환 동작은 아직 포함되지 않은 상태입니다.
+        아래 UI는 노트북 Flask 서버 + Cloudflare Worker와 연결되어 있습니다.<br />
+        현재는 mp3 변환만 지원합니다.
       </div>
 
       <!-- 업로드 / 포맷 선택 폼 -->
@@ -124,19 +124,17 @@
 
         <label class="label">2. 변환 포맷</label>
         <select name="format">
-          <option value="original">원본 유지</option>
-          <option value="mp4">mp4로 변환</option>
-          <option value="mp3">mp3로 변환</option>
-          <option value="wav">wav로 변환</option>
+          <option value="mp3">mp3로 변환 (현재 지원)</option>
+          <option value="original" disabled>원본 유지 (준비 중)</option>
+          <option value="mp4" disabled>mp4로 변환 (준비 중)</option>
+          <option value="wav" disabled>wav로 변환 (준비 중)</option>
         </select>
 
-        <button type="submit">변환 요청 (앞으로 연결 자리)</button>
+        <button type="submit">변환 요청</button>
       </form>
 
       <div class="hint">
-        지금 단계는 UI 스케치 단계입니다.<br />
-        뒤에서 Flask 서버 + FFmpeg + Cloudflare Workers를 연결하여  
-        실제 파일을 업로드하고 변환하고 다운로드 링크를 돌려주는 로직을 붙일 예정입니다.
+        다음 단계에서는 FFmpeg 변환(mp4/mp3/wav) 기능 전체를 확장할 예정입니다.
       </div>
 
     </div>
@@ -169,7 +167,7 @@
         }
 
         const file = fileInput.files[0];
-        const format = formatSelect.value || "original";
+        const format = formatSelect.value;
 
         submitButton.disabled = true;
         submitButton.textContent = "변환 요청 중…";
@@ -186,11 +184,16 @@
 
           const data = await response.json();
           resultBox.textContent = "서버 응답: " + JSON.stringify(data, null, 2);
+
+          // 다운로드 링크 자동 표시
+          if (data.output_url) {
+            resultBox.innerHTML += `<br><br><a href="${data.output_url}" target="_blank" style="color:#4f8cff">다운로드 하기</a>`;
+          }
         } catch (err) {
           resultBox.textContent = "요청 오류: " + err.message;
         } finally {
           submitButton.disabled = false;
-          submitButton.textContent = "변환 요청 (앞으로 연결 자리)";
+          submitButton.textContent = "변환 요청";
         }
       });
     });
