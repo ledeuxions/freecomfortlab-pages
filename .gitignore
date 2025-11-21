@@ -1,1 +1,13 @@
-nul
+# Visual Studio
+.vs/
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
