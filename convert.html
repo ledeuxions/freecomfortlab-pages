@@ -1,180 +1,447 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <!-- 페이지 기본 설정 -->
+  <!-- ✅ 페이지 기본 설정 -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- SEO / 메타 설정 -->
+  <!-- ✅ SEO / 메타 정보 -->
   <title>FreeComfortLab – 파일 변환 실험실</title>
-  <meta name="description" content="파일 변환 실험 페이지 (UI 테스트 단계)" />
+  <meta name="description" content="유튜브 음원·녹음 파일 등을 mp3로 변환하는 FreeComfortLab 파일 변환 실험실입니다." />
 
-  <!-- 스타일 정의 -->
+  <!-- ✅ 기본 스타일 -->
   <style>
+    /* 전체 배경 / 폰트 */
     body {
       margin: 0;
       padding: 0;
-      background: #0e1016;
-      font-family: 'Pretendard', sans-serif;
-      color: #fff;
+      background: radial-gradient(circle at top left, #20263a 0, #05060a 55%);
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
+      color: #ffffff;
     }
 
-    a { text-decoration: none; color: #9aa4c6; }
+    a {
+      text-decoration: none;
+      color: #a3b2ff;
+    }
 
+    /* 전체 레이아웃 래퍼 */
     .page-wrapper {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 32px 16px 56px;
     }
 
-    .card {
-      background: #1b1f27;
-      border-radius: 12px;
-      padding: 24px;
+    /* 상단 뒤로가기 버튼 */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #181b24;
       border: 1px solid #2a2f3a;
+      font-size: 13px;
+      color: #aab3cf;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s;
     }
 
-    h1 {
-      font-size: 28px;
-      margin-bottom: 4px;
-      font-weight: 700;
+    .btn-back:hover {
+      background: #202435;
+      border-color: #3a4bff66;
+      transform: translateY(-1px);
     }
 
-    .sub-text {
-      font-size: 14px;
-      color: #9aa4c6;
+    /* 상단 타이틀 영역 */
+    .header-title {
       margin-bottom: 28px;
     }
 
-    .btn-back {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      background: #2a2f3a;
-      font-size: 14px;
+    .header-title h1 {
+      font-size: 28px;
+      margin: 0 0 6px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
-    .label {
+    .header-title .sub {
+      font-size: 14px;
+      color: #9aa4c6;
+      line-height: 1.6;
+    }
+
+    /* 카드 박스 (폼 영역) */
+    .card {
+      background: #12151e;
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      border: 1px solid #262c3c;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: #8d95aa;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    /* 폼 공통 라벨 */
+    .form-label {
+      display: block;
       font-size: 14px;
       margin-bottom: 6px;
-      display: block;
+      color: #ced3f5;
     }
 
-    input, select {
+    .form-row {
+      margin-bottom: 18px;
+    }
+
+    /* 파일 입력 커스텀 */
+    .file-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .file-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-button {
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: #1c2130;
+      border: 1px solid #30364a;
+      font-size: 14px;
+      cursor: pointer;
+      color: #e2e7ff;
+      white-space: nowrap;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s;
+    }
+
+    .file-button:hover {
+      background: #23293a;
+      border-color: #4f8cff80;
+      transform: translateY(-1px);
+    }
+
+    .file-name {
+      flex: 1;
+      font-size: 13px;
+      color: #8e96b1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 셀렉트 박스 */
+    select {
       width: 100%;
       padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #3a3f4a;
-      background: #12141a;
-      color: #fff;
-      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #30364a;
+      background: #10131b;
+      color: #e6ebff;
+      font-size: 14px;
+      outline: none;
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #8c94b0 50%),
+                        linear-gradient(135deg, #8c94b0 50%, transparent 50%);
+      background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
     }
 
-    button {
+    select:focus {
+      border-color: #4f8cff;
+      box-shadow: 0 0 0 1px #4f8cff55;
+    }
+
+    /* 메인 제출 버튼 */
+    .btn-primary {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
+      padding: 12px 16px;
+      border-radius: 12px;
       border: none;
       background: #4f8cff;
       font-size: 15px;
       font-weight: 600;
+      color: #ffffff;
       cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s;
     }
 
-    button:disabled {
-      background: #3c4b6b;
+    .btn-primary:hover {
+      background: #6b9dff;
+      box-shadow: 0 0 0 1px #6b9dff55;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      background: #3e6ee0;
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn-primary:disabled {
+      background: #3d4664;
       cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.9;
     }
 
+    .btn-primary.loading {
+      position: relative;
+      background: #3d4664;
+      cursor: wait;
+    }
+
+    .btn-primary.loading::after {
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      margin-top: -7px;
+      border-radius: 50%;
+      border: 2px solid #cdd6ff;
+      border-top-color: transparent;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 설명 / 힌트 텍스트 */
     .hint {
-      font-size: 13px;
-      color: #8c94a6;
-      margin-top: 20px;
+      font-size: 12px;
+      color: #7f879c;
       line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    /* 서버 응답 표시 박스 */
+    .status-box {
+      margin-top: 18px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      background: #151826;
+      border: 1px solid #2a3044;
+      color: #c1c7e6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .status-box.success {
+      border-color: #3fbf7f;
+      background: #13241b;
+      color: #c9f7d9;
+    }
+
+    .status-box.error {
+      border-color: #ff6478;
+      background: #2a1319;
+      color: #ffd5db;
+    }
+
+    .status-box.muted {
+      opacity: 0.8;
+    }
+
+    /* 하단 작은 각인 */
+    .footer-note {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #737c96;
+      text-align: right;
     }
   </style>
 </head>
 
 <body>
-  <!-- 페이지 전체 래퍼 -->
   <div class="page-wrapper">
+    <!-- 🔙 메인으로 돌아가기 -->
+    <a href="/" class="btn-back">← FreeComfortLab 메인으로</a>
 
-    <!-- 헤더 + 뒤로가기 -->
-    <a href="/" class="btn-back">← 메인으로 돌아가기</a>
+    <!-- 🧪 페이지 타이틀 -->
+    <header class="header-title">
+      <h1>파일 변환 실험실</h1>
+      <p class="sub">
+        현재는 <strong>mp3 변환 테스트</strong>만 연결되어 있습니다.<br />
+        실제 변환 품질·속도 검증을 위한 실험 페이지입니다.
+      </p>
+    </header>
 
-    <h1>파일 변환 실험실</h1>
-    <div class="sub-text">
-      1차 버전 – UI 베이스 상태. 실제 변환은 이제부터 붙여 나갑니다.
-    </div>
-
-    <!-- 파일 업로드 & 옵션 카드 -->
-    <div class="card">
-
-      <div class="label">파일 업로드 & 포맷 선택</div>
-      <div class="hint">
-        아래 UI는 노트북 Flask 서버 + Cloudflare Worker와 연결되어 있습니다.<br />
-        현재는 mp3 변환만 지원합니다.
+    <!-- 📦 업로드 + 포맷 카드 -->
+    <section class="card">
+      <div class="card-title">1차 실험: mp3 변환 테스트</div>
+      <div class="card-sub">
+        아래 폼은 <strong>집 노트북 Flask 서버 + Cloudflare Worker</strong>와 연결되어 있습니다.<br />
+        지금은 “서버까지 파일이 잘 도착하는지”를 확인하는 단계입니다.
       </div>
 
-      <!-- 업로드 / 포맷 선택 폼 -->
-      <form>
-        <label class="label">1. 파일 선택</label>
-        <input type="file" name="input_file" />
+      <!-- 🔧 업로드 / 포맷 선택 폼 -->
+      <form id="convert-form">
+        <!-- 1) 파일 선택 -->
+        <div class="form-row">
+          <label class="form-label" for="file-input">1. 파일 선택</label>
 
-        <label class="label">2. 변환 포맷</label>
-        <select name="format">
-          <option value="mp3">mp3로 변환 (현재 지원)</option>
-          <option value="original" disabled>원본 유지 (준비 중)</option>
-          <option value="mp4" disabled>mp4로 변환 (준비 중)</option>
-          <option value="wav" disabled>wav로 변환 (준비 중)</option>
-        </select>
+          <div class="file-input-wrapper">
+            <!-- 사용자가 클릭하는 예쁜 버튼 -->
+            <button type="button" class="file-button" id="file-button">파일 선택</button>
 
-        <button type="submit">변환 요청</button>
+            <!-- 실제 파일 인풋 (보이지 않게) -->
+            <input
+              id="file-input"
+              class="file-input"
+              type="file"
+              name="file"
+              accept="audio/*,video/mp4,video/x-matroska,.m4a,.wav"
+            />
+
+            <!-- 선택된 파일 이름 표시 -->
+            <div class="file-name" id="file-name">선택된 파일 없음</div>
+          </div>
+
+          <div class="hint">
+            · 유튜브에서 받은 음원, 녹음 파일 등 <strong>음성/영상 파일</strong>을 올려주세요.<br />
+            · 현재는 텍스트 파일을 올려도 서버까지는 전송되지만, 실제 변환은 mp3용으로 설계 중입니다.
+          </div>
+        </div>
+
+        <!-- 2) 변환 포맷 선택 -->
+        <div class="form-row">
+          <label class="form-label" for="format-select">2. 변환 포맷</label>
+          <select id="format-select" name="format">
+            <option value="mp3" selected>mp3로 변환 (현재 지원)</option>
+            <option value="keep" disabled>원본 유지 (준비 중)</option>
+            <option value="mp4" disabled>mp4로 변환 (준비 중)</option>
+            <option value="wav" disabled>wav로 변환 (준비 중)</option>
+          </select>
+
+          <div class="hint">
+            · 실제 변환은 우선 <strong>mp3</strong>만 연결하고,<br />
+            · 이후 <strong>wav / mp4 / 원본 유지</strong> 옵션을 순차적으로 추가할 계획입니다.
+          </div>
+        </div>
+
+        <!-- 3) 변환 요청 버튼 -->
+        <button type="submit" class="btn-primary" id="submit-button">
+          변환 요청 보내기
+        </button>
       </form>
 
-      <div class="hint">
-        다음 단계에서는 FFmpeg 변환(mp4/mp3/wav) 기능 전체를 확장할 예정입니다.
+      <!-- 🧾 서버 응답 / 오류 표시 -->
+      <div id="status-box" class="status-box muted">
+        아직 요청 전입니다. 파일을 선택하고 [변환 요청 보내기]를 눌러주세요.
       </div>
 
-    </div>
+      <div class="footer-note">
+        현재 구조: Cloudflare Pages → Worker → 집 노트북 Flask 서버(/api/convert)
+      </div>
+    </section>
   </div>
 
-  <!-- ▼▼ /api/convert 연결을 위한 스크립트 ▼▼ -->
+  <!-- ✅ /api/convert 호출 스크립트 -->
   <script>
+    // DOM이 준비되면 실행
     document.addEventListener("DOMContentLoaded", function () {
-      const form = document.querySelector("form");
-      const fileInput = document.querySelector('input[type="file"]');
-      const formatSelect = document.querySelector("select");
-      const submitButton = document.querySelector('button[type="submit"]');
+      const form = document.getElementById("convert-form");
+      const fileInput = document.getElementById("file-input");
+      const fileButton = document.getElementById("file-button");
+      const fileNameLabel = document.getElementById("file-name");
+      const formatSelect = document.getElementById("format-select");
+      const submitButton = document.getElementById("submit-button");
+      const statusBox = document.getElementById("status-box");
 
-      let resultBox = document.getElementById("convert-result-box");
-      if (!resultBox) {
-        resultBox = document.createElement("div");
-        resultBox.id = "convert-result-box";
-        resultBox.style.marginTop = "20px";
-        resultBox.style.fontSize = "14px";
-        resultBox.style.color = "#8c94a6";
-        form.parentNode.appendChild(resultBox);
+      // 👉 파일 선택 버튼 클릭 → 실제 input 클릭
+      fileButton.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      // 👉 파일 선택 시 파일 이름 표시
+      fileInput.addEventListener("change", function () {
+        if (!fileInput.files.length) {
+          fileNameLabel.textContent = "선택된 파일 없음";
+          return;
+        }
+        const file = fileInput.files[0];
+        fileNameLabel.textContent = file.name + " (" + Math.round(file.size / 1024) + "KB)";
+      });
+
+      // 👉 상태 박스에 메시지 표시하는 헬퍼
+      function setStatus(message, type) {
+        statusBox.textContent = message;
+        statusBox.classList.remove("success", "error", "muted");
+        if (type === "success") {
+          statusBox.classList.add("success");
+        } else if (type === "error") {
+          statusBox.classList.add("error");
+        } else {
+          statusBox.classList.add("muted");
+        }
       }
 
-      form.addEventListener("submit", async (event) => {
+      // 👉 버튼 로딩 상태 on/off
+      function setLoading(isLoading) {
+        if (isLoading) {
+          submitButton.disabled = true;
+          submitButton.classList.add("loading");
+          submitButton.textContent = "서버로 전송 중…";
+        } else {
+          submitButton.disabled = false;
+          submitButton.classList.remove("loading");
+          submitButton.textContent = "변환 요청 보내기";
+        }
+      }
+
+      // 👉 폼 제출 처리
+      form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
+        // 1) 파일 선택 여부 확인
         if (!fileInput.files.length) {
-          resultBox.textContent = "먼저 업로드할 파일을 선택하세요.";
+          setStatus("먼저 업로드할 파일을 선택해주세요.", "error");
+          return;
+        }
+
+        // 2) 현재는 mp3만 지원 안내 (select에서 이미 막혀있지만 보호용)
+        const format = formatSelect.value || "mp3";
+        if (format !== "mp3") {
+          setStatus("현재는 mp3 변환만 지원합니다. (다른 포맷은 준비 중)", "error");
           return;
         }
 
         const file = fileInput.files[0];
-        const format = formatSelect.value;
 
-        submitButton.disabled = true;
-        submitButton.textContent = "변환 요청 중…";
-
+        // 3) 서버 전송 준비
         const formData = new FormData();
         formData.append("file", file);
         formData.append("format", format);
+
+        setLoading(true);
+        setStatus("서버로 파일을 전송하고 있습니다…", null);
 
         try {
           const response = await fetch("/api/convert", {
@@ -182,23 +449,44 @@
             body: formData,
           });
 
-          const data = await response.json();
-          resultBox.textContent = "서버 응답: " + JSON.stringify(data, null, 2);
-
-          // 다운로드 링크 자동 표시
-          if (data.output_url) {
-            resultBox.innerHTML += `<br><br><a href="${data.output_url}" target="_blank" style="color:#4f8cff">다운로드 하기</a>`;
+          // JSON 응답 파싱 시도
+          let data = null;
+          try {
+            data = await response.json();
+          } catch (e) {
+            // JSON이 아니면 텍스트로 받아서 보여줌
+            const text = await response.text();
+            setStatus("서버 응답을 JSON으로 파싱하지 못했습니다:\n" + text, "error");
+            return;
           }
+
+          // HTTP 에러 코드 처리
+          if (!response.ok) {
+            setStatus(
+              "요청은 전송되었으나 서버에서 오류를 반환했습니다.\n\n" +
+                "HTTP status: " +
+                response.status +
+                "\n" +
+                JSON.stringify(data, null, 2),
+              "error"
+            );
+            return;
+          }
+
+          // 정상 응답 처리
+          setStatus(
+            "서버에서 파일을 정상적으로 받았습니다.\n\n" +
+              JSON.stringify(data, null, 2),
+            "success"
+          );
         } catch (err) {
-          resultBox.textContent = "요청 오류: " + err.message;
+          // 네트워크 / 기타 오류
+          setStatus("요청 중 오류가 발생했습니다:\n" + err.message, "error");
         } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = "변환 요청";
+          setLoading(false);
         }
       });
     });
   </script>
-  <!-- ▲▲ 스크립트 끝 ▲▲ -->
-
 </body>
 </html>
