@@ -1,0 +1,42 @@
+:root {
+  --bg-main: #e4eef8;
+  --bg-card: #f6faff;
+  --text-main: #222;
+  --text-sub: #444;
+  --primary-color: #0178ff;
+  --primary-dark: #015fcc;
+  --button-bg: #0178ff;
+  --button-hover: #0160d6;
+  --shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.card, .module {
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+}
+
+button, .button {
+  background: var(--button-bg);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  transition: background 0.3s;
+}
+button:hover, .button:hover {
+  background: var(--button-hover);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary-dark);
+}

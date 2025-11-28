@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FreeComfortLab – 파일 변환 실험실</title>
+  <meta
+    name="description"
+    content="카카오톡 영상, 일반 영상, 녹음 파일을 목적에 맞게 변환해 주는 작은 파일 변환 실험실입니다. 개인 기록과 작업 효율을 높이는 방법과 주의사항을 함께 정리했습니다."
+  />
+  <meta
+    name="keywords"
+    content="FreeComfortLab, 파일 변환, 카카오톡 영상, mp3 변환, 음원 정리, 자동화 실험실"
+  />
+
+  <style>
+    
+    :root {
+      --bg-main: linear-gradient(180deg, #f4f7ff 0%, #eef8ff 40%, #1f2937 100%);
+      --panel: #1f2937;
+      --panel-strong: #f5f7ff;
+      --border-soft: rgba(15, 35, 75, 0.08);
+      --accent: #3b82f6;          /* 파란 포인트 */
+      --accent-soft: rgba(59,130,246,0.18);
+      --text-main: #111827;       /* 거의 검정 */
+      --text-sub: #6b7280;        /* 부연 설명 회색 */
+    }
+
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #78e3ff, #3150ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #f3f4f6;
+    }
+
+    .logo-title { font-size: 18px; font-weight: 700; }
+    .logo-sub { font-size: 12px; color: var(--text-sub); }
+
+    .header-tag {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(0,0,0,0.35);
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* HERO + MENU */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 22px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .hero {
+      background: var(--panel);
+      border-radius: 20px;
+      border: 1px solid var(--border-soft);
+      padding: 24px 22px 22px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 14px;
+    }
+
+    .hero-title span {
+      color: #1f2937;
+      text-shadow: 0 0 30px rgba(111,173,255,0.8);
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    .hero-desc strong { color: #1f2937; }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .hero-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(5,8,22,0.85);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .hero-footnote {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .hero-footnote strong { color: #1f2937; font-weight: 600; }
+
+    /* SIDE MENU */
+    .menu-panel {
+      background: var(--panel);
+      border-radius: 20px;
+      border: 1px solid var(--border-soft);
+      padding: 18px 16px 16px;
+    }
+
+    .menu-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .menu-title { font-size: 13px; color: var(--text-sub); }
+    .menu-label {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(5,8,22,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-card {
+      background: #1f2937;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 12px 12px 10px;
+      transition: 0.18s;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-soft);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+    }
+
+    .menu-card h3 {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .menu-card p {
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--text-sub);
+    }
+
+    .menu-meta {
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--text-sub);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .menu-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(7,11,30,0.95);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* CONTENT SECTIONS */
+    .section {
+      background: var(--panel-strong);
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      padding: 18px 18px 16px;
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    .section + .section { margin-top: 12px; }
+
+    .section h2 {
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .section h3 {
+      font-size: 14px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .section ul { padding-left: 18px; margin-top: 4px; }
+    .section li { margin-bottom: 4px; }
+
+    .faq-item + .faq-item { margin-top: 8px; }
+
+    .faq-q {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .faq-a { margin-top: 2px; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-sub);
+      text-align: center;
+      opacity: 0.8;
+    }
+  
+  /* === hover 효과 강화 (메뉴 카드 / 뱃지) === */
+  .menu-card {
+    cursor: pointer;
+    transition:
+      background 0.18s ease,
+      transform 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .menu-card:hover {
+    background: rgba(76, 125, 255, 0.16);
+    border-color: var(--accent-soft);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+  }
+
+  .hero-badge {
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .hero-badge:hover {
+    background: rgba(76, 125, 255, 0.2);
+    border-color: var(--accent-soft);
+    color: #1f2937;
+  }
+\n</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-circle">F</div>
+        <div>
+          <div class="logo-title">FreeComfortLab</div>
+          <div class="logo-sub">파일 변환 실험실 · 개인 기록용 자동화</div>
+        </div>
+      </div>
+      <div class="header-tag">광고가 표시될 수 있으며, 실험실 운영에 사용됩니다.</div>
+    </header>
+
+    <!-- HERO + MENU -->
+    <main class="layout">
+      <!-- HERO -->
+      <section class="hero">
+        <h1 class="hero-title">
+          <span>프리 컨버터 실험실</span><br />
+          파일이 편안해지는 순간,<br />
+          반복 작업은 수익과 여유로 바뀝니다.
+        </h1>
+
+        <p class="hero-desc">
+          FreeComfortLab은 카카오톡 영상, 일반 영상, 녹음 파일처럼
+          <strong>“매번 정리하기 귀찮은 파일”</strong>을 목적에 맞게 정리하는 작은 실험실입니다.<br />
+          개발자 쇼케이스가 아니라, 실제 작업자의 입장에서
+          <strong>필요해서 만든 워크플로</strong>와 사용 팁을 함께 정리합니다.
+        </p>
+
+        <div class="hero-badges">
+          <span class="hero-badge">카카오톡 영상 정리</span>
+          <span class="hero-badge">영상 → MP3 추출</span>
+          <span class="hero-badge">녹음 파일 통합</span>
+          <span class="hero-badge">개인 기록 · 공부용</span>
+        </div>
+
+        <p class="hero-footnote">
+          이 페이지는 실험 중인 도구들의 <strong>안내서이자 허브</strong>입니다.
+          아래 메뉴에서 오늘 하고 싶은 작업을 선택해 주세요.
+        </p>
+      </section>
+
+      <!-- MENU PANEL -->
+      <aside class="menu-panel">
+        <div class="menu-heading">
+          <div class="menu-title">오늘 할 수 있는 변환 작업</div>
+          <div class="menu-label">실험 메뉴</div>
+        </div>
+
+        <div class="menu-list">
+
+          <a class="menu-card" href="/kakao-video-to-video.html">
+            <h3>카카오톡 영상 → 일반 MP4 영상</h3>
+            <p>
+              카카오톡으로 받은 동영상을 표준 MP4(H.264 + AAC)로 재인코딩해
+              재생 호환성을 높이는 페이지입니다.
+            </p>
+            <div class="menu-meta">
+              <span class="menu-pill">3gp · mp4 대응</span>
+              <span class="menu-pill">해상도 짝수 스케일</span>
+            </div>
+          </a>
+
+          <a class="menu-card" href="/kakao-video-to-mp3.html">
+            <h3>카카오톡 영상 → MP3 음원</h3>
+            <p>
+              강의, 통화 기록처럼 음성이 중요한 카카오톡 영상을
+              MP3로 추출해 다시 듣기 좋게 만드는 페이지입니다.
+            </p>
+            <div class="menu-meta">
+              <span class="menu-pill">음성 학습</span>
+              <span class="menu-pill">기록용</span>
+            </div>
+          </a>
+
+          <a class="menu-card" href="/video-to-mp3.html">
+            <h3>일반 영상(mp4 등) → MP3</h3>
+            <p>
+              유튜브에서 내려받은 영상 파일, 화면 녹화 등 일반 영상에서
+              오디오만 추출해 MP3로 정리합니다.
+            </p>
+            <div class="menu-meta">
+              <span class="menu-pill">mp4 · mov · mkv</span>
+              <span class="menu-pill">192kbps</span>
+            </div>
+          </a>
+
+          <a class="menu-card" href="/audio-to-mp3.html">
+            <h3>녹음·음원 파일 → MP3 통합</h3>
+            <p>
+              m4a, wav, ogg 등 다양한 형식의 음원 파일을
+              동일한 MP3 형식으로 통일해 보관하기 쉽게 만들어 줍니다.
+            </p>
+            <div class="menu-meta">
+              <span class="menu-pill">녹음 정리</span>
+              <span class="menu-pill">개인 아카이브</span>
+            </div>
+          </a>
+
+        </div>
+      </aside>
+    </main>
+
+    <!-- SECTION: ABOUT -->
+    <section class="section">
+      <h2>FreeComfortLab은 어떤 실험실인가요?</h2>
+      <p>
+        이곳은 “한 번 배우면 계속 쓰게 되는 파일 정리 습관”을 연구하는 작은 실험실입니다.
+        건축·디자인·크리에이티브 작업에서 실제로 필요했던 워크플로를 바탕으로,
+        시간을 아껴주는 자동화 도구를 직접 만들고 있습니다.
+      </p>
+
+      <h3>1. 기술보다 ‘현실 작업’에 맞춘 설계</h3>
+      <p>
+        복잡한 메뉴보다, 실제로 자주 쓰이는 변환 시나리오에 집중합니다.
+        예를 들면 카카오톡 영상만 따로 빼서 정리한다든지,
+        녹음 파일을 전부 MP3로 통일하는 식의 현실적인 목적을 우선합니다.
+      </p>
+
+      <h3>2. 실험 결과를 글로 남기는 이유</h3>
+      <p>
+        단순히 도구만 제공하면 “어떻게 쓰면 좋은지”가 빠지기 쉽습니다.
+        그래서 각 변환 페이지에는 사용 예시와 주의사항을 함께 정리해 두고,
+        이 메인 페이지에서는 전체 흐름과 철학을 설명합니다.
+      </p>
+    </section>
+
+    <!-- SECTION: NOTICE -->
+    <section class="section">
+      <h2>이용 전 꼭 읽어주세요</h2>
+      <ul>
+        <li>
+          이 사이트는 <strong>개인 기록·학습·업무 정리</strong>를 위한 목적으로 설계되었습니다.
+          저작권이 있는 상업 콘텐츠를 무단으로 변환·배포하는 용도로 사용하지 않는 것을 권장합니다.
+        </li>
+        <li>
+          변환 과정에서 사용되는 파일은 서버의 임시 폴더에 저장되며,
+          일정 시간 후 자동 삭제되도록 구성할 예정입니다. (구체적인 정책은 실험 노트에 계속 업데이트합니다.)
+        </li>
+        <li>
+          페이지 상단·하단에 광고가 표시될 수 있으며,
+          이는 실험실 운영 비용을 보충하기 위한 용도입니다.
+        </li>
+      </ul>
+    </section>
+
+    <!-- SECTION: FAQ -->
+    <section class="section">
+      <h2>자주 묻는 질문 (FAQ)</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">Q. 변환된 파일은 어디에 저장되나요?</div>
+        <div class="faq-a">
+          브라우저에서 바로 다운로드되며, 사용자의 기기에 저장됩니다.
+          서버에는 임시 파일만 남고, 주기적으로 삭제되도록 설계하고 있습니다.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Q. 모바일에서도 사용할 수 있나요?</div>
+        <div class="faq-a">
+          네, 크롬·사파리 등 최신 브라우저가 설치된 스마트폰에서도
+          파일 선택과 다운로드가 가능합니다. 다만 대용량 영상은 PC 사용을 권장합니다.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Q. 상업 프로젝트에 쓴 음원도 변환해도 되나요?</div>
+        <div class="faq-a">
+          파일 변환 자체는 가능하지만, 저작권 조건을 반드시 확인한 뒤
+          <strong>본인이 권리를 가진 자료</strong> 중심으로 사용하는 편이 안전합니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      © 2025 Le Deuxions · FreeComfortLab · freecomfortlab.com<br />
+      개인 작업자의 파일 정리와 워크플로 연구를 위한 실험실입니다.
+    </footer>
+  </div>
+</body>
+</html>
