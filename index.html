@@ -264,7 +264,36 @@
       text-align: center;
       opacity: 0.8;
     }
-  </style>
+  
+  /* === hover 효과 강화 (메뉴 카드 / 뱃지) === */
+  .menu-card {
+    cursor: pointer;
+    transition:
+      background 0.18s ease,
+      transform 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .menu-card:hover {
+    background: rgba(76, 125, 255, 0.16);
+    border-color: var(--accent-soft);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+  }
+
+  .hero-badge {
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .hero-badge:hover {
+    background: rgba(76, 125, 255, 0.2);
+    border-color: var(--accent-soft);
+    color: #ffffff;
+  }
+\n</style>
 </head>
 <body>
   <div class="wrap">
