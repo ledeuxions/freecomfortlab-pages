@@ -3,11 +3,11 @@
   <url>
     <loc>https://freecomfortlab.com/</loc>
     <priority>1.0</priority>
-    <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://freecomfortlab.com/convert.html</loc>
-    <priority>0.9</priority>
-    <changefreq>daily</changefreq>
+    <loc>https://freecomfortlab.com/kakao-video-to-video.html</loc>
+  </url>
+  <url>
+    <loc>https://freecomfortlab.com/kakao-video-to-mp3.html</loc>
   </url>
 </urlset>
