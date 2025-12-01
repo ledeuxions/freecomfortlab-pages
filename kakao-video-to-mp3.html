@@ -2,279 +2,64 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>카카오톡 영상 → MP3 변환 – FreeComfortLab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="카카오톡으로 받은 영상을 MP3 음원으로 추출하는 실험실입니다."
-  />
-  <!-- 스타일은 위 페이지와 동일 패턴 (복붙) -->
-  <!-- 시작 -->
+  <title>카카오톡 영상 MP3 변환 - FreeComfortLab</title>
   <style>
     :root {
-      --bg-dark: #050816;
-      --bg-panel: #0b1020;
-      --accent: #4c7dff;
-      --accent-soft: rgba(76, 125, 255, 0.25);
-      --text-main: #e5ecff;
-      --text-sub: #9aa4c6;
-      --border-soft: rgba(255, 255, 255, 0.08);
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #333;
+      --accent: #8e44ad;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #222c4f 0, #050816 50%, #01020a 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
       color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      padding: 24px 12px 32px;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark {
-      width: 34px; height: 34px; border-radius: 12px;
-      background: radial-gradient(circle at 30% 20%, #78e3ff, #3150ff);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; color: #050816;
-    }
-    .logo-main { font-size: 16px; font-weight: 700; }
-    .logo-sub { font-size: 11px; color: var(--text-sub); }
-    .btn-back {
-      padding: 6px 12px; border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: rgba(5, 8, 22, 0.9);
-      font-size: 11px; color: var(--text-sub); cursor: pointer;
+      margin: 0; padding: 20px;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .card {
-      background: rgba(5, 8, 22, 0.96);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-soft);
-      padding: 20px 18px 18px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 18px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%; max-width: 520px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    @media (max-width: 800px) {
-      .card { grid-template-columns: minmax(0, 1fr); }
+    h1 { margin: 0 0 10px; font-size: 24px; color: #2c3e50; }
+    p { margin-bottom: 30px; color: #666; font-size: 15px; line-height: 1.6; }
+    .upload-box {
+      border: 2px dashed #d1d5db; border-radius: 16px; padding: 32px;
+      margin-bottom: 24px; cursor: pointer; transition: 0.2s;
+      background: #f9fafb;
     }
-    .card-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .card-desc { font-size: 13px; color: var(--text-sub); line-height: 1.7; margin-bottom: 16px; }
-    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .badge {
-      font-size: 10px; padding: 4px 9px; border-radius: 999px;
-      background: rgba(10, 17, 40, 0.9); border: 1px solid var(--border-soft);
-      color: var(--text-sub);
+    .upload-box:hover { border-color: var(--accent); background: #f3e8ff; }
+    .btn {
+      background: var(--accent); color: white; border: none;
+      padding: 16px; width: 100%; border-radius: 12px;
+      font-size: 16px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+      transition: 0.2s;
     }
-    .upload-panel {
-      background: radial-gradient(circle at top, #151b34, #070a16);
-      border-radius: var(--radius-md);
-      border: 1px dashed rgba(255, 255, 255, 0.14);
-      padding: 14px 14px 12px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .upload-label { font-size: 12px; color: var(--text-sub); }
-    .file-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .file-input { display: none; }
-    .btn-file {
-      padding: 8px 14px; border-radius: 999px; border: none;
-      background: linear-gradient(135deg, #4c7dff, #8f5bff);
-      color: #050816; font-size: 12px; font-weight: 600; cursor: pointer;
-    }
-    .file-name { font-size: 11px; color: var(--text-sub); }
-    .hint { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
-    .hint strong { color: #ffffff; }
-    .btn-convert {
-      margin-top: 10px; padding: 9px 16px; border-radius: 999px; border: none;
-      background: rgba(76, 125, 255, 0.12); color: var(--accent);
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-convert:disabled { opacity: 0.6; cursor: default; }
-    .status-box {
-      margin-top: 10px; padding: 10px 12px; border-radius: 10px;
-      background: rgba(3, 6, 18, 0.95); border: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 11px; color: var(--text-sub); white-space: pre-wrap;
-      word-break: break-all; max-height: 170px; overflow-y: auto;
-    }
-    .status-ok { color: #8df3c3; }
-    .status-error { color: #ff9f9f; }
-    .howto { font-size: 12px; color: var(--text-sub); line-height: 1.7; }
-    .howto h2 { font-size: 13px; margin-bottom: 6px; color: var(--text-main); }
-    .howto ol { padding-left: 18px; margin-bottom: 10px; }
-    .howto li { margin-bottom: 4px; }
-    .howto ul { padding-left: 16px; }
-    .howto li::marker { color: var(--accent); }
-    .footer {
-      margin-top: 8px; font-size: 10px; color: var(--text-sub);
-      display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4); }
+    .home-link { margin-top: 20px; display: inline-block; color: #666; text-decoration: none; font-size: 14px; }
   </style>
-  <!-- 끝 -->
 </head>
 <body>
-  <div class="page">
-    <header class="header">
-      <div class="logo">
-        <div class="logo-mark">F</div>
-        <div>
-          <div class="logo-main">FreeComfortLab</div>
-          <div class="logo-sub">카카오톡 영상 → MP3 변환</div>
-        </div>
-      </div>
-      <a href="/">
-        <button class="btn-back" type="button">← 메인으로 돌아가기</button>
-      </a>
-    </header>
+  <div class="card">
+    <div style="font-size: 40px; margin-bottom: 10px;">🎵</div>
+    <h1>카톡 영상 소리 추출</h1>
+    <p>카카오톡에서 저장한 영상 파일을 선택하면<br>즉시 고음질 MP3로 변환해 드립니다.</p>
+    
+    <div class="upload-box" onclick="document.getElementById('file').click()">
+      <span style="font-size: 24px;">📂</span><br>
+      <span style="display:block; margin-top:8px; color:#555;">여기를 클릭해서 파일 선택</span>
+      <input type="file" id="file" accept="video/*" style="display:none">
+    </div>
 
-    <section class="card">
-      <div>
-        <div class="card-title">카카오톡 영상에서 음원만 뽑기</div>
-        <p class="card-desc">
-          카카오톡으로 받은 동영상에서 <strong>오디오만 MP3</strong>로 추출합니다.<br />
-          공부·강의·음성메모를 정리할 때 쓰는 실험용 도구입니다.
-        </p>
-
-        <div class="badge-row">
-          <span class="badge">KakaoTalk video → MP3</span>
-          <span class="badge">음성만 추출</span>
-          <span class="badge">실험실 β</span>
-        </div>
-
-        <div class="upload-panel">
-          <div class="upload-label">1. 카카오톡에서 저장한 영상을 선택</div>
-          <div class="file-row">
-            <button class="btn-file" type="button" id="btnPick">파일 선택</button>
-            <span class="file-name" id="fileName">선택된 파일 없음</span>
-          </div>
-          <input
-            id="fileInput"
-            class="file-input"
-            type="file"
-            accept="video/*,.mp4,.3gp,.mov"
-          />
-
-          <p class="hint">
-            • 카카오톡 대화창에서 <strong>“동영상 저장”</strong> 후, 이곳에 올려주세요.<br />
-            • 변환 결과는 <strong>MP3</strong> 파일로 내려받을 수 있습니다.
-          </p>
-
-          <button class="btn-convert" id="btnConvert" type="button">
-            ▶ 2. MP3로 변환하기
-          </button>
-
-          <div id="statusBox" class="status-box">
-            아직 변환을 시작하지 않았습니다.
-          </div>
-        </div>
-      </div>
-
-      <aside class="howto">
-        <h2>사용 방법</h2>
-        <ol>
-          <li>카카오톡에서 동영상을 기기에 저장합니다.</li>
-          <li>왼쪽에서 파일 선택 → “MP3로 변환하기” 버튼을 누릅니다.</li>
-          <li>완료 후 브라우저에서 MP3 파일이 다운로드됩니다.</li>
-        </ol>
-
-        <h2>주의 사항</h2>
-        <ul>
-          <li>저작권이 있는 영상은 개인 공부/기록 용도로만 사용해 주세요.</li>
-        </ul>
-      </aside>
-    </section>
-
-    <footer class="footer">
-      <span>© 2025 Le Deuxions · freecomfortlab.com</span>
-      <span>Cloudflare Pages + FreeComfortLab Backend 실험 중</span>
-    </footer>
+    <button class="btn">MP3로 변환하기</button>
+    <a href="index.html" class="home-link">← 실험실 메인으로</a>
   </div>
-
-  <script>
-    const TYPE = "video-to-mp3"; // 카톡 영상도 결국 영상 → mp3
-    const fileInput = document.getElementById("fileInput");
-    const btnPick = document.getElementById("btnPick");
-    const btnConvert = document.getElementById("btnConvert");
-    const fileNameSpan = document.getElementById("fileName");
-    const statusBox = document.getElementById("statusBox");
-    let selectedFile = null;
-
-    btnPick.addEventListener("click", () => fileInput.click());
-
-    fileInput.addEventListener("change", () => {
-      if (fileInput.files && fileInput.files[0]) {
-        selectedFile = fileInput.files[0];
-        fileNameSpan.textContent = selectedFile.name;
-      } else {
-        selectedFile = null;
-        fileNameSpan.textContent = "선택된 파일 없음";
-      }
-    });
-
-    function setStatus(text, type) {
-      statusBox.textContent = text;
-      statusBox.classList.remove("status-ok", "status-error");
-      if (type === "ok") statusBox.classList.add("status-ok");
-      if (type === "error") statusBox.classList.add("status-error");
-    }
-
-    btnConvert.addEventListener("click", async () => {
-      if (!selectedFile) {
-        setStatus("먼저 카카오톡에서 저장한 영상을 선택해 주세요.", "error");
-        return;
-      }
-
-      btnConvert.disabled = true;
-      setStatus("서버로 파일을 전송하고 있습니다...", null);
-
-      try {
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("type", TYPE);
-
-        const res = await fetch("/api/convert", { method: "POST", body: formData });
-        const contentType = res.headers.get("content-type") || "";
-
-        if (contentType.includes("application/json")) {
-          const data = await res.json();
-          const msg = (data && (data.message || data.error)) || "알 수 없는 오류가 발생했습니다.";
-          setStatus("변환 실패: " + msg, "error");
-          return;
-        }
-
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-
-        let filename = "kakao-audio.mp3";
-        const cd = res.headers.get("content-disposition") || "";
-        const match = cd.match(/filename="?([^"]+)"?/);
-        if (match && match[1]) filename = decodeURIComponent(match[1]);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-
-        setStatus("변환 완료! 브라우저에서 MP3 파일이 다운로드되었습니다.", "ok");
-      } catch (err) {
-        setStatus("네트워크 또는 서버 오류가 발생했습니다: " + err, "error");
-      } finally {
-        btnConvert.disabled = false;
-      }
-    });
-  </script>
 </body>
 </html>

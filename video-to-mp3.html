@@ -2,18 +2,114 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>영상 파일 → MP3 변환 – FreeComfortLab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="일반 영상 파일에서 음원만 MP3로 추출하는 실험실입니다."
-  />
-  <!-- 스타일 동일 (위에서 사용한 style 블록 그대로 복붙 가능) -->
-  <!-- 편의상 생략하지만 실제 파일에는 위 kakao-video-to-mp3.html의 style 부분 그대로 넣어주면 됨 -->
-  <!-- 여기서는 핵심 JS만 보여주는 구조로 설명했고, 명령으로 만들 파일에는 전체 style 포함되어 있다. -->
+  <title>일반 영상 MP3 변환 - FreeComfortLab</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(120deg, #e0c3fc 0%, #c2e9fb 100%);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.9);
+      --text-main: #2c3e50;
+      --accent: #6c5ce7;
+    }
+    body {
+      font-family: system-ui, sans-serif; background: var(--bg-gradient);
+      color: var(--text-main); margin: 0; padding: 20px; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .card {
+      background: var(--glass-bg); backdrop-filter: blur(12px);
+      border: var(--glass-border); border-radius: 24px; padding: 32px;
+      width: 100%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    }
+    h1 { font-size: 20px; margin-bottom: 8px; color: #2d3436; }
+    p.desc { font-size: 14px; color: #636e72; margin-bottom: 24px; line-height: 1.5; }
+    
+    .upload-box {
+      border: 2px dashed #b2bec3; border-radius: 16px; padding: 30px;
+      text-align: center; margin-bottom: 20px; transition: 0.2s; background: rgba(255,255,255,0.5);
+    }
+    .upload-box:hover { border-color: var(--accent); background: rgba(255,255,255,0.8); }
+    
+    .btn {
+      width: 100%; padding: 14px; border-radius: 12px; border: none;
+      background: var(--accent); color: white; font-weight: 700; font-size: 15px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .btn:hover { background: #5649c0; transform: translateY(-2px); }
+    .btn:disabled { background: #b2bec3; cursor: default; }
+    
+    .status { margin-top: 16px; font-size: 13px; text-align: center; }
+    .back-link { display: block; text-align: center; margin-top: 20px; font-size: 13px; color: #636e72; text-decoration: none; }
+  </style>
 </head>
 <body>
-  <!-- (kakao-video-to-mp3.html과 동일 구조, 텍스트만 일반 영상용으로 수정) -->
-  <!-- TYPE 값만 "video-to-mp3" -->
+  <div class="card">
+    <h1>📹 일반 영상 → MP3 변환</h1>
+    <p class="desc">영화, 유튜브 다운로드 영상 등 모든 동영상 파일에서<br>오디오만 추출하여 MP3로 저장합니다.</p>
+    
+    <div class="upload-box" id="dropArea">
+      <div style="font-size: 32px; margin-bottom: 10px;">📀</div>
+      <p id="fileName" style="font-size:14px; color:#636e72;">클릭해서 동영상 파일 선택</p>
+      <input type="file" id="fileInput" accept="video/*" style="display:none">
+    </div>
+
+    <button id="btnConvert" class="btn">오디오 추출하기</button>
+    <div id="statusBox" class="status"></div>
+    
+    <a href="index.html" class="back-link">← 메인으로 돌아가기</a>
+  </div>
+
+  <script>
+    const TYPE = "video-to-mp3";
+    const fileInput = document.getElementById("fileInput");
+    const dropArea = document.getElementById("dropArea");
+    const fileName = document.getElementById("fileName");
+    const btn = document.getElementById("btnConvert");
+    const status = document.getElementById("statusBox");
+    let file = null;
+
+    dropArea.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => {
+      if(e.target.files[0]) {
+        file = e.target.files[0];
+        fileName.textContent = "✅ " + file.name;
+        fileName.style.color = "#2d3436";
+        fileName.style.fontWeight = "bold";
+      }
+    });
+
+    btn.addEventListener("click", async () => {
+      if(!file) return alert("파일을 먼저 선택해주세요!");
+      btn.disabled = true;
+      btn.textContent = "추출 중...";
+      status.textContent = "서버로 전송하여 오디오를 추출합니다...";
+      
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("type", TYPE);
+        
+        const res = await fetch("/api/convert", { method: "POST", body: formData });
+        if(!res.ok) throw new Error("변환 실패");
+        
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "extracted_audio.mp3";
+        a.click();
+        
+        status.textContent = "🎉 완료! MP3가 저장되었습니다.";
+        status.style.color = "#00b894";
+        btn.textContent = "성공";
+      } catch(err) {
+        status.textContent = "실패: " + err.message;
+        status.style.color = "#d63031";
+        btn.disabled = false;
+        btn.textContent = "다시 시도";
+      }
+    });
+  </script>
 </body>
 </html>
