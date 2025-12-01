@@ -14,44 +14,52 @@
   />
 
   <style>
-    
     :root {
-      --bg-main: linear-gradient(180deg, #f4f7ff 0%, #eef8ff 40%, #1f2937 100%);
-      --panel: #1f2937;
-      --panel-strong: #f5f7ff;
-      --border-soft: rgba(15, 35, 75, 0.08);
-      --accent: #3b82f6;          /* 파란 포인트 */
-      --accent-soft: rgba(59,130,246,0.18);
-      --text-main: #111827;       /* 거의 검정 */
-      --text-sub: #6b7280;        /* 부연 설명 회색 */
+      /* 파스텔 톤 배경 그라데이션 (부드러운 하늘색 ~ 연보라 ~ 핑크) */
+      --bg-gradient: linear-gradient(120deg, #e0c3fc 0%, #c2e9fb 100%);
+      
+      /* 유리 질감(Glassmorphism) 패널 변수 */
+      --glass-bg: rgba(255, 255, 255, 0.65); /* 반투명 흰색 */
+      --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      
+      /* 텍스트 색상 (밝은 배경에 맞춰 어둡게 변경) */
+      --text-main: #2c3e50;       /* 짙은 네이비 그레이 */
+      --text-sub: #5d6d7e;        /* 중간 톤 회색 */
+      
+      /* 포인트 컬러 */
+      --accent: #6c5ce7;          /* 부드러운 보라색 */
+      --accent-hover: #a29bfe;    /* 호버 시 연보라 */
     }
-
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed; /* 스크롤해도 배경 고정 */
       color: var(--text-main);
+      min-height: 100vh;
     }
 
     a { text-decoration: none; color: inherit; }
 
     .wrap {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 30px 20px 60px;
+      padding: 40px 20px 80px;
       display: flex;
       flex-direction: column;
-      gap: 26px;
+      gap: 30px;
     }
 
-    /* HEADER */
+    /* === HEADER === */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      margin-bottom: 10px;
     }
 
     .logo {
@@ -61,246 +69,256 @@
     }
 
     .logo-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #78e3ff, #3150ff);
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      color: #f3f4f6;
+      font-size: 20px;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(161, 140, 209, 0.4);
     }
 
-    .logo-title { font-size: 18px; font-weight: 700; }
-    .logo-sub { font-size: 12px; color: var(--text-sub); }
+    .logo-title { font-size: 20px; font-weight: 700; color: #2d3436; }
+    .logo-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
 
     .header-tag {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: rgba(0,0,0,0.35);
-      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255,255,255, 0.8);
+      font-size: 12px;
       color: var(--text-sub);
+      backdrop-filter: blur(4px);
     }
 
-    /* HERO + MENU */
+    /* === LAYOUT (HERO + MENU) === */
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 22px;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 24px;
       align-items: flex-start;
     }
 
     @media (max-width: 900px) {
-      .layout { grid-template-columns: minmax(0, 1fr); }
+      .layout { grid-template-columns: 1fr; }
     }
 
+    /* 공통 유리 패널 스타일 */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px); /* 뒤가 흐릿하게 비치는 효과 */
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      padding: 28px;
+    }
+
+    /* HERO SECTION */
     .hero {
-      background: var(--panel);
-      border-radius: 20px;
-      border: 1px solid var(--border-soft);
-      padding: 24px 22px 22px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .hero-title {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
-      line-height: 1.35;
-      margin-bottom: 14px;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      color: #2d3436;
     }
 
     .hero-title span {
-      color: #1f2937;
-      text-shadow: 0 0 30px rgba(111,173,255,0.8);
+      background: linear-gradient(120deg, #6c5ce7, #fd79a8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .hero-desc {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-sub);
-      line-height: 1.8;
-      margin-bottom: 18px;
+      line-height: 1.7;
+      margin-bottom: 24px;
     }
 
-    .hero-desc strong { color: #1f2937; }
+    .hero-desc strong {
+      color: #2d3436;
+      background: linear-gradient(to top, rgba(162, 155, 254, 0.2) 50%, transparent 50%);
+    }
 
     .hero-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 18px;
-      font-size: 11px;
-      color: var(--text-sub);
+      margin-bottom: 24px;
     }
 
     .hero-badge {
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(5,8,22,0.85);
-      border: 1px solid rgba(255,255,255,0.09);
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255,255,255,0.6);
+      font-size: 12px;
+      color: #555;
+      font-weight: 600;
     }
 
     .hero-footnote {
-      font-size: 11px;
-      color: var(--text-sub);
-      margin-top: 4px;
+      font-size: 12px;
+      color: #888;
+      background: rgba(255,255,255,0.4);
+      padding: 10px 14px;
+      border-radius: 12px;
     }
 
-    .hero-footnote strong { color: #1f2937; font-weight: 600; }
-
-    /* SIDE MENU */
+    /* MENU PANEL */
     .menu-panel {
-      background: var(--panel);
-      border-radius: 20px;
-      border: 1px solid var(--border-soft);
-      padding: 18px 16px 16px;
+      padding: 24px;
     }
 
     .menu-heading {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 10px;
+      align-items: center;
+      margin-bottom: 16px;
     }
 
-    .menu-title { font-size: 13px; color: var(--text-sub); }
+    .menu-title { font-size: 14px; font-weight: 700; color: var(--text-sub); }
     .menu-label {
       font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(5,8,22,0.9);
-      border: 1px solid rgba(255,255,255,0.08);
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #6c5ce7;
+      color: #fff;
+      font-weight: 600;
     }
 
     .menu-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .menu-card {
-      background: #1f2937;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 12px 12px 10px;
-      transition: 0.18s;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.9);
+      padding: 16px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
 
     .menu-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--accent-soft);
-      box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+      background: #fff;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(108, 92, 231, 0.15);
+      border-color: var(--accent-hover);
     }
 
     .menu-card h3 {
-      font-size: 13px;
-      margin-bottom: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #2d3436;
     }
 
     .menu-card p {
-      font-size: 11px;
-      line-height: 1.6;
+      font-size: 12px;
+      line-height: 1.5;
       color: var(--text-sub);
     }
 
     .menu-meta {
-      margin-top: 6px;
-      font-size: 10px;
-      color: var(--text-sub);
+      margin-top: 10px;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .menu-pill {
+      font-size: 10px;
       padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(7,11,30,0.95);
-      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      background: #f1f2f6;
+      color: #747d8c;
+      font-weight: 600;
     }
 
-    /* CONTENT SECTIONS */
+    /* === SECTIONS === */
     .section {
-      background: var(--panel-strong);
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      padding: 18px 18px 16px;
-      font-size: 13px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: var(--glass-border);
+      padding: 32px;
+      box-shadow: var(--glass-shadow);
       color: var(--text-sub);
-      line-height: 1.8;
+      line-height: 1.7;
     }
-
-    .section + .section { margin-top: 12px; }
 
     .section h2 {
-      font-size: 15px;
-      margin-bottom: 8px;
-      color: var(--text-main);
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #2d3436;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
     }
 
     .section h3 {
-      font-size: 14px;
-      margin-top: 8px;
-      margin-bottom: 4px;
-      color: var(--text-main);
+      font-size: 15px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      color: #2d3436;
+      font-weight: 700;
     }
 
-    .section ul { padding-left: 18px; margin-top: 4px; }
-    .section li { margin-bottom: 4px; }
+    .section ul { padding-left: 20px; margin-top: 8px; }
+    .section li { margin-bottom: 6px; font-size: 13px; }
 
-    .faq-item + .faq-item { margin-top: 8px; }
-
+    /* FAQ 스타일 */
+    .faq-item {
+      background: rgba(255,255,255,0.4);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    
     .faq-q {
-      font-weight: 600;
-      color: var(--text-main);
+      font-weight: 700;
+      color: #2d3436;
+      font-size: 14px;
+      margin-bottom: 4px;
     }
 
-    .faq-a { margin-top: 2px; }
+    .faq-a { font-size: 13px; color: var(--text-sub); }
 
     /* FOOTER */
     footer {
-      margin-top: 18px;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-sub);
       text-align: center;
-      opacity: 0.8;
+      opacity: 0.7;
+      margin-top: 10px;
     }
-  
-  /* === hover 효과 강화 (메뉴 카드 / 뱃지) === */
-  .menu-card {
-    cursor: pointer;
-    transition:
-      background 0.18s ease,
-      transform 0.18s ease,
-      border-color 0.18s ease,
-      box-shadow 0.18s ease;
-  }
-
-  .menu-card:hover {
-    background: rgba(76, 125, 255, 0.16);
-    border-color: var(--accent-soft);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
-  }
-
-  .hero-badge {
-    transition:
-      background 0.18s ease,
-      border-color 0.18s ease,
-      color 0.18s ease;
-  }
-
-  .hero-badge:hover {
-    background: rgba(76, 125, 255, 0.2);
-    border-color: var(--accent-soft);
-    color: #1f2937;
-  }
-\n</style>
+    
+    /* 모바일 대응 */
+    @media (max-width: 600px) {
+      .wrap { padding: 20px 16px 60px; }
+      .header-tag { display: none; } /* 모바일에서 공간 부족시 숨김 */
+      .hero-title { font-size: 26px; }
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
 
-    <!-- HEADER -->
     <header class="header">
       <div class="logo">
         <div class="logo-circle">F</div>
@@ -312,10 +330,8 @@
       <div class="header-tag">광고가 표시될 수 있으며, 실험실 운영에 사용됩니다.</div>
     </header>
 
-    <!-- HERO + MENU -->
     <main class="layout">
-      <!-- HERO -->
-      <section class="hero">
+      <section class="hero glass-panel">
         <h1 class="hero-title">
           <span>프리 컨버터 실험실</span><br />
           파일이 편안해지는 순간,<br />
@@ -330,10 +346,10 @@
         </p>
 
         <div class="hero-badges">
-          <span class="hero-badge">카카오톡 영상 정리</span>
-          <span class="hero-badge">영상 → MP3 추출</span>
-          <span class="hero-badge">녹음 파일 통합</span>
-          <span class="hero-badge">개인 기록 · 공부용</span>
+          <span class="hero-badge">🎵 카카오톡 영상 정리</span>
+          <span class="hero-badge">🎥 영상 → MP3 추출</span>
+          <span class="hero-badge">🎙️ 녹음 파일 통합</span>
+          <span class="hero-badge">📂 개인 기록 · 공부용</span>
         </div>
 
         <p class="hero-footnote">
@@ -342,8 +358,7 @@
         </p>
       </section>
 
-      <!-- MENU PANEL -->
-      <aside class="menu-panel">
+      <aside class="menu-panel glass-panel">
         <div class="menu-heading">
           <div class="menu-title">오늘 할 수 있는 변환 작업</div>
           <div class="menu-label">실험 메뉴</div>
@@ -403,7 +418,6 @@
       </aside>
     </main>
 
-    <!-- SECTION: ABOUT -->
     <section class="section">
       <h2>FreeComfortLab은 어떤 실험실인가요?</h2>
       <p>
@@ -427,7 +441,6 @@
       </p>
     </section>
 
-    <!-- SECTION: NOTICE -->
     <section class="section">
       <h2>이용 전 꼭 읽어주세요</h2>
       <ul>
@@ -446,7 +459,6 @@
       </ul>
     </section>
 
-    <!-- SECTION: FAQ -->
     <section class="section">
       <h2>자주 묻는 질문 (FAQ)</h2>
 
@@ -475,7 +487,6 @@
       </div>
     </section>
 
-    <!-- FOOTER -->
     <footer>
       © 2025 Le Deuxions · FreeComfortLab · freecomfortlab.com<br />
       개인 작업자의 파일 정리와 워크플로 연구를 위한 실험실입니다.
