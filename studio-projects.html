@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreeComfort Studio — 다른 작업들 · 프로젝트 소개</title>
+  <meta name="description" content="FreeComfort Studio 밖에서 진행 중인 PDF300, 도장 PNG 추출기 등의 작업을 정리한 페이지입니다." />
+  <style>
+    :root {
+      --bg-body: #f3f4f6;
+      --bg-card: #ffffff;
+      --border-soft: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --accent: #4a5f4f;
+      --accent-soft: rgba(74, 95, 79, 0.06);
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 900px;
+      padding: 28px 16px 36px;
+    }
+
+    a { color: inherit; }
+
+    .top-link {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .top-link a {
+      text-decoration: none;
+      color: var(--text-sub);
+    }
+
+    .top-link a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+    }
+
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      font-size: 13px;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .project-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .project-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .project-meta {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding-top: 12px;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 20px 14px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top-link">
+      <a href="index.html">← FreeComfort Studio 홈으로 돌아가기</a>
+    </div>
+
+    <h1>다른 작업들 · 프로젝트 소개</h1>
+    <p class="subtitle">
+      FreeComfort Studio 밖에서 따로 운영 중이거나, 별도 도메인을 사용하는 작업들을 정리해두는 공간입니다.
+      링크와 설명은 상황에 따라 계속 업데이트될 수 있습니다.
+    </p>
+
+    <div class="projects">
+      <section class="project-card">
+        <div class="project-header">
+          <div class="project-title">PDF300 — 공공기관 제출용 PDF 압축 도구</div>
+          <span class="project-tag">별도 도메인</span>
+        </div>
+        <p class="project-desc">
+          나라장터, e-나라도움, 지자체·교육청 등 공공기관에 파일을 제출할 때 필요한
+          PDF 용량 제한(예: 200MB, 300MB, 500MB 등)을 맞추기 위해 만든 압축 도구입니다.
+          목표 용량과 압축 스타일을 선택하면, 서버에서 Ghostscript로 자동 압축을 진행합니다.
+        </p>
+        <p class="project-meta">
+          · 도메인: <strong>pdf300.com</strong> (연결 및 구성 진행 중)<br />
+          · 상태: 실제 입찰/제출에 사용할 수 있도록 안정화 중<br />
+          · 추후 안내: PDF300 내에서 별도 이용 가이드 제공 예정
+        </p>
+      </section>
+
+      <section class="project-card">
+        <div class="project-header">
+          <div class="project-title">도장 PNG 추출 실험 도구</div>
+          <span class="project-tag">실험 프로젝트</span>
+        </div>
+        <p class="project-desc">
+          종이에 찍힌 도장 이미지를 배경에서 분리해,
+          선명한 PNG 파일로 추출하는 실험 도구입니다.
+          실제 인감/서명으로 쓰기보다는, 문서 작업 시 시각적으로 정리된 도장을 쓰기 위한 용도에 가깝습니다.
+        </p>
+        <p class="project-meta">
+          · 도메인 및 최종 구조는 추후 확정 후 연결 예정<br />
+          · FreeComfort Studio와 별도의 실험 라인으로 유지될 수 있습니다.
+        </p>
+      </section>
+
+      <section class="project-card">
+        <div class="project-header">
+          <div class="project-title">기타 실험 / 향후 예정 작업</div>
+          <span class="project-tag">아이디어 스택</span>
+        </div>
+        <p class="project-desc">
+          영상·오디오·문서·이미지 관련 도구 외에도,
+          건축·미술 작업과 연결된 도구들, 그리고 장기적으로는
+          Maison de Le Deuxions 세계관과 맞닿는 프로젝트들이 이쪽에서 정리될 예정입니다.
+        </p>
+        <p class="project-meta">
+          · 아직은 ‘메모 보관함’에 가까운 영역<br />
+          · 실제 서비스로 올라가는 작업들은 별도 도메인 또는 이 스튜디오 안에 편입될 수 있습니다.
+        </p>
+      </section>
+    </div>
+
+    <footer>
+      © 2025 FreeComfort Studio · Le Deuxions Studio — 르듀종
+    </footer>
+  </div>
+</body>
+</html>
