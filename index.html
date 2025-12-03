@@ -4,626 +4,499 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FreeComfort Studio — 설치 없이 바로 쓰는 변환 작업실</title>
-
-  <meta name="description" content="카카오톡 영상, 녹음 파일, 간단한 클립들을 설치 없이 브라우저에서 바로 변환할 수 있는 작은 작업실입니다." />
-  <link rel="canonical" href="https://freecomfortlab.com/" />
-
-  <!-- OG / SNS -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="FreeComfort Studio — 설치 없이 바로 쓰는 변환 작업실" />
-  <meta property="og:description" content="카카오톡 영상, 오디오, 간단한 클립들을 브라우저에서 바로 변환할 수 있는 작은 작업실." />
-  <meta property="og:url" content="https://freecomfortlab.com/" />
-
+  <meta name="description" content="카카오톡 영상, 녹음 파일, 간단한 클립들을 설치 없이 바로 변환하는 온라인 변환 작업실입니다." />
   <style>
-    :root {
-      --bg-main: #f4f1ff;           /* 라이트 퍼플 배경 */
-      --bg-card: #ffffff;
-      --border-soft: #e2d9ff;
-      --text-main: #1f2933;
-      --text-muted: #6b7280;
-      --accent: #9c84ff;           /* 포인트 퍼플 */
-      --accent-soft: #cfc3ff;
-      --accent-strong: #8366ff;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
-      --shadow-chip: 0 10px 25px rgba(148, 163, 184, .25);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      background: radial-gradient(circle at top left, #f7f4ff 0, #f4f1ff 40%, #f7f5ff 100%);
-      color: var(--text-main);
-      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #f7f0ff 0%, #f4f6ff 40%, #f8f5ff 100%);
+      color:#222;
+      min-height:100vh;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { text-decoration:none; color:inherit; }
 
-    .page {
-      max-width: 1100px;
+    .page-wrap {
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 24px 20px 56px;
+      padding: 32px 20px 40px;
     }
 
-    /* 헤더 / 네비게이션 */
+    /* 헤더 */
     .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      gap: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:24px;
     }
 
     .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      font-weight:800;
+      font-size:20px;
+      letter-spacing:0.03em;
     }
 
-    .brand-title {
-      font-weight: 700;
-      font-size: 20px;
-      letter-spacing: 0.04em;
-    }
-
-    .brand-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.8);
-      color: var(--text-muted);
-      box-shadow: var(--shadow-chip);
-    }
-
-    .brand-pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
+    .brand span {
+      font-weight:500;
+      font-size:12px;
+      margin-left:8px;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.8);
+      border:1px solid rgba(180,160,255,0.4);
+      color:#7b5cff;
     }
 
     .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 13px;
+      display:flex;
+      gap:14px;
+      font-size:13px;
+      color:#666;
     }
 
     .nav a {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      transition: all 0.18s ease-out;
+      padding:6px 10px;
+      border-radius:999px;
+      transition:background 0.2s, color 0.2s;
+      white-space:nowrap;
     }
 
     .nav a:hover {
-      background: rgba(255, 255, 255, 0.8);
-      border-color: var(--accent-soft);
-      color: var(--accent-strong);
+      background:rgba(123,92,255,0.08);
+      color:#4f3bd9;
     }
 
-    .nav a.nav-primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: var(--shadow-chip);
-    }
-
-    .nav a.nav-primary:hover {
-      background: var(--accent-strong);
-    }
-
-    /* 히어로 */
+    /* 히어로 카드 */
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-      gap: 18px;
-      margin-bottom: 28px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border-radius:22px;
+      padding:24px 24px 22px;
+      box-shadow:0 18px 45px rgba(123,92,255,0.18);
+      border:1px solid rgba(196,182,255,0.7);
+      display:grid;
+      grid-template-columns:minmax(0, 1.7fr) minmax(0, 1.1fr);
+      gap:18px;
+      margin-bottom:32px;
     }
 
-    .hero-main,
-    .hero-side {
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: var(--radius-lg);
-      padding: 20px 22px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(226, 217, 255, 0.7);
-      backdrop-filter: blur(14px);
+    .hero-label {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      color:#6b6b8a;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(123,92,255,0.06);
+      margin-bottom:10px;
     }
 
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #f9f5ff;
-      color: var(--accent-strong);
-      margin-bottom: 10px;
-    }
-
-    .hero-eyebrow span {
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #e9ddff;
-      font-weight: 600;
-      font-size: 10px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+    .hero-label-dot {
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#7b5cff;
     }
 
     .hero-title {
-      font-size: 24px;
-      font-weight: 750;
-      margin-bottom: 8px;
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:8px;
+      letter-spacing:-0.02em;
     }
 
     .hero-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.5;
+      font-size:13px;
+      color:#55556b;
+      line-height:1.6;
+      margin-bottom:14px;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .hero-buttons {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      font-size:12px;
     }
 
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 11px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: #f8f5ff;
-      color: var(--accent-strong);
-      border: 1px solid var(--accent-soft);
-      cursor: pointer;
-      transition: all 0.15s ease-out;
+    .btn-main {
+      padding:8px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#7b5cff,#b07cff);
+      color:#fff;
+      font-weight:600;
+      box-shadow:0 10px 25px rgba(123,92,255,0.35);
+      border:none;
+      cursor:pointer;
     }
 
-    .chip:hover {
-      background: #ede5ff;
+    .btn-sub {
+      padding:7px 13px;
+      border-radius:999px;
+      background:rgba(123,92,255,0.04);
+      border:1px solid rgba(167,153,255,0.6);
+      color:#5e4bdf;
+      font-weight:500;
+      cursor:pointer;
     }
 
-    .chip-secondary {
-      background: #f9fafb;
-      color: var(--text-muted);
-      border-color: #e5e7eb;
+    .hero-note {
+      font-size:12px;
+      color:#77728f;
+      line-height:1.6;
+      padding:10px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.9);
+      border:1px dashed rgba(199,185,255,0.9);
     }
 
-    .chip-secondary:hover {
-      background: #eef2ff;
-      color: var(--accent-strong);
-      border-color: var(--accent-soft);
-    }
-
-    .chip-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .hero-side-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #4b5563;
-    }
-
-    .hero-side-text {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-
-    .hero-side-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--accent-strong);
-    }
-
-    .hero-side-link span {
-      font-size: 14px;
+    .hero-note strong {
+      font-weight:700;
+      color:#5a3fd9;
     }
 
     /* 섹션 타이틀 */
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin: 14px 0 10px;
-      color: #4b5563;
+    .section-title-row {
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      margin:10px 2px 14px;
     }
 
-    /* 카드 그리드 */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 24px;
+    .section-title {
+      font-size:14px;
+      font-weight:700;
+      color:#373250;
+    }
+
+    .section-caption {
+      font-size:11px;
+      color:#8a82a8;
+    }
+
+    /* 카드 공통 */
+    .tool-grid {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .tool-row {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+
+    .tool-row.second {
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      max-width:760px;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: var(--radius-md);
-      padding: 14px 14px 12px;
-      border: 1px solid rgba(226, 217, 255, 0.7);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
-      cursor: pointer;
+      position:relative;
+      background:rgba(255,255,255,0.94);
+      border-radius:18px;
+      padding:16px 16px 14px;
+      border:1px solid rgba(209,197,255,0.85);
+      box-shadow:0 10px 30px rgba(120,90,255,0.12);
+      font-size:12px;
+      overflow:hidden;
     }
 
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.10);
-      border-color: var(--accent-soft);
+    .card-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      font-size:10px;
+      padding:3px 7px;
+      border-radius:999px;
+      background:rgba(123,92,255,0.06);
+      color:#6a5bf1;
+      margin-bottom:6px;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      color: var(--accent-strong);
-      background: #f4ebff;
-      border-radius: 999px;
-      padding: 3px 7px;
-      width: fit-content;
-    }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
-
-    .badge-muted {
-      background: #f3f4f6;
-      color: var(--text-muted);
+    .card-badge--primary {
+      background:rgba(255,255,255,0.9);
+      color:#ff4f9a;
+      border:1px solid rgba(255,127,170,0.7);
     }
 
     .card-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:4px;
+      color:#302742;
     }
 
     .card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
+      font-size:12px;
+      color:#6b6684;
+      line-height:1.6;
+      margin-bottom:10px;
+      min-height:40px;
     }
 
-    .card-footer {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #9ca3af;
+    .card-actions {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      font-size:11px;
+      margin-top:2px;
     }
 
-    .card-footer a {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--accent-strong);
+    .pill-link {
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(123,92,255,0.08);
+      color:#4c3ad1;
+      font-weight:500;
     }
 
-    .card-footer a span {
-      font-size: 13px;
+    .pill-link--ghost {
+      background:rgba(123,92,255,0.03);
+      color:#7a70c8;
     }
 
-    /* “다른 작업들” 카드 */
-    .card-small {
-      font-size: 12px;
+    .pill-link--ghost span {
+      font-size:11px;
+      opacity:0.9;
     }
 
-    /* 푸터 */
-    footer {
-      margin-top: 24px;
-      padding: 18px 16px;
-      border-radius: var(--radius-lg);
-      background: rgba(255, 255, 255, 0.96);
-      border: 1px solid rgba(226, 217, 255, 0.7);
-      box-shadow: 0 10px 32px rgba(15, 23, 42, 0.06);
-      font-size: 12px;
-      color: var(--text-muted);
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 14px;
+    .pill-link.small {
+      font-size:10px;
+      padding:5px 9px;
     }
 
-    footer strong {
-      color: #4b5563;
-      font-weight: 600;
+    .card-hint {
+      font-size:11px;
+      color:#9189b0;
     }
 
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: flex-start;
-      justify-content: flex-end;
+    /* About & 푸터 */
+    .about {
+      margin-top:32px;
+      padding:18px 16px 18px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.92);
+      border:1px solid rgba(210,200,255,0.9);
+      font-size:12px;
+      color:#66607f;
+      line-height:1.7;
     }
 
-    .footer-links a {
-      font-size: 12px;
-      color: var(--accent-strong);
+    .about strong {
+      color:#403468;
     }
 
-    .footer-links a span {
-      font-size: 13px;
+    .about a {
+      color:#5a46e0;
+      text-decoration:underline;
     }
 
-    /* 반응형 */
+    .footer {
+      margin-top:18px;
+      font-size:11px;
+      color:#9a94c0;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .footer a { color:#9a94c0; }
+
     @media (max-width: 900px) {
       .hero {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      footer {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns:1fr;
       }
     }
 
-    @media (max-width: 640px) {
-      .page {
-        padding: 18px 14px 40px;
+    @media (max-width: 768px) {
+      .page-wrap {
+        padding:20px 14px 32px;
       }
-
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
+      .tool-row {
+        grid-template-columns:1fr;
       }
-
-      .hero-main,
-      .hero-side {
-        padding: 16px 15px;
+      .tool-row.second {
+        grid-template-columns:1fr;
+        max-width:none;
       }
-
-      .card-grid {
-        grid-template-columns: minmax(0, 1fr);
+      .nav {
+        display:none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-
-    <!-- 상단 바 -->
+  <div class="page-wrap">
+    <!-- 헤더 -->
     <header class="top-bar">
       <div class="brand">
-        <div class="brand-title">FreeComfort Studio</div>
-        <div class="brand-pill">
-          <div class="brand-pill-dot"></div>
-          <span>빠르고 편한 변환 작업실</span>
-        </div>
+        FreeComfort Studio
+        <span>가볍게 쓰는 변환 작업실</span>
       </div>
       <nav class="nav">
-        <a href="#tools">변환 도구 모음</a>
-        <a href="#kakao-video" class="nav-primary">카카오톡 영상 변환</a>
+        <a href="#kakao-main">카카오톡 영상 변환</a>
         <a href="#audio-mp3">오디오 → MP3</a>
-        <a href="#other-works">다른 작업들</a>
-        <a href="#contact">Contact</a>
+        <a href="#other-tools">다른 작업들</a>
+        <a href="/contact.html">Contact</a>
         <a href="/privacy.html">Privacy</a>
       </nav>
     </header>
 
     <!-- 히어로 -->
     <section class="hero">
-      <div class="hero-main">
-        <div class="hero-eyebrow">
-          <span>STUDIO</span>
-          설치 없이 브라우저에서 바로 사용
+      <div>
+        <div class="hero-label">
+          <span class="hero-label-dot"></span>
+          설치 없이 바로 쓰는 변환 작업실
         </div>
         <h1 class="hero-title">FreeComfort Studio — 설치 없이 바로 쓰는 변환 작업실</h1>
         <p class="hero-desc">
-          카카오톡 영상, 녹음 파일, 간단한 클립들을<br />
+          카카오톡 영상, 녹음 파일, 간단한 클립들을
           따로 프로그램 설치 없이 브라우저에서 바로 변환할 수 있는 작은 작업실입니다.
+          자주 쓰는 도구부터 가볍게 모아두었습니다.
         </p>
-        <div class="hero-actions">
-          <a href="#kakao-video" class="chip">
-            <div class="chip-dot"></div>
-            카카오톡 영상 변환 바로가기
-          </a>
-          <a href="#audio-mp3" class="chip-secondary">
-            MP3 변환 도구 보기
-          </a>
-          <a href="#other-works" class="chip-secondary">
-            다른 작업들 · 프로젝트 소개
-          </a>
+        <div class="hero-buttons">
+          <a href="#kakao-main" class="btn-main">카카오톡 영상 변환 바로가기</a>
+          <a href="#tools" class="btn-sub">MP3 변환 도구 보기</a>
+          <a href="#other-tools" class="btn-sub">다른 작업들 · 프로젝트 소개</a>
         </div>
       </div>
-
-      <aside class="hero-side">
-        <div class="hero-side-title">이 사이트는</div>
-        <p class="hero-side-text">
-          일상에서 자주 쓰게 되는 작은 도구들을<br />
-          하나의 작업실 안에 모아두는 개인 프로젝트입니다.<br />
-          파일은 변환 처리에만 사용되며 따로 저장하지 않습니다.
-        </p>
-        <p class="hero-side-text">
-          새로운 변환 도구를 천천히 추가하고, 품질도 계속 다듬어 갈 예정입니다.
-        </p>
-        <a href="#contact" class="hero-side-link">
-          문의 · 제안하기 <span>→</span>
-        </a>
-      </aside>
+      <div>
+        <div class="hero-note">
+          이 사이트는 일상에서 자주 쓰이는 작은 도구들을<br />
+          <strong>최소한의 버튼과 단계</strong>로 빠르게 쓰도록 만든 개인 프로젝트입니다.<br />
+          파일은 변환 처리에만 사용되며, 별도 저장소에 오래 보관하지 않습니다.<br /><br />
+          새로운 변환 도구와 프로젝트는
+          <strong>가볍게, 하지만 꾸준히</strong> 추가될 예정입니다.
+        </div>
+      </div>
     </section>
 
     <!-- 주요 변환 도구 -->
     <section id="tools">
-      <h2 class="section-title">주요 변환 도구</h2>
-      <div class="card-grid">
-
-        <!-- 카카오톡 영상 변환 -->
-        <a id="kakao-video" href="/kakao-video-to-video.html" class="card">
-          <div class="badge">
-            <div class="badge-dot"></div>
-            가장 많이 쓰이는 기능
-          </div>
-          <div class="card-title">카카오톡 영상 변환 (MP3/MP4)</div>
-          <p class="card-desc">
-            카카오톡에서 받은 영상을 그대로 저장하기 어렵거나, 2분·4분 제한 때문에 끊기는 경우에 사용하기 좋은 변환 도구입니다.<br />
-            재생이 막힌 영상을 변환해서 다시 활용할 수 있습니다.
-          </p>
-          <div class="card-footer">
-            <span>브라우저에서 바로 실행</span>
-            <a href="/kakao-video-to-video.html">
-              자세히 보기 <span>↗</span>
-            </a>
-          </div>
-        </a>
-
-        <!-- 영상 오디오 -> MP3 -->
-        <a id="audio-mp3" href="/video-to-mp3.html" class="card">
-          <div class="badge badge-muted">
-            음성만 필요할 때
-          </div>
-          <div class="card-title">영상 오디오 → MP3 변환</div>
-          <p class="card-desc">
-            녹음된 강의나 영상에서 소리만 빼고 싶을 때, 전체 영상을 다시 열지 않고 MP3 파일로 저장해서 듣기 좋게 만드는 도구입니다.
-          </p>
-          <div class="card-footer">
-            <span>MP3 출력</span>
-            <a href="/video-to-mp3.html">
-              변환하기 <span>↗</span>
-            </a>
-          </div>
-        </a>
-
-        <!-- 카카오톡 영상 → MP4 재인코딩 -->
-        <a href="/convert.html" class="card">
-          <div class="badge badge-muted">
-            화면 유지
-          </div>
-          <div class="card-title">카카오톡 영상 → MP4 재인코딩</div>
-          <p class="card-desc">
-            카카오톡에서만 재생되던 영상을 다른 플레이어나<br />
-            다른 서비스에서도 볼 수 있도록 일반 MP4로 다시 저장하는 작업입니다.
-          </p>
-          <div class="card-footer">
-            <span>공유·보관용</span>
-            <a href="/convert.html">
-              도구 열기 <span>↗</span>
-            </a>
-          </div>
-        </a>
+      <div class="section-title-row">
+        <div class="section-title">주요 변환 도구</div>
+        <div class="section-caption">자주 쓸만한 기능만 앞쪽에 모았습니다.</div>
       </div>
-    </section>
 
-    <!-- 베타 / 실험실 도구 -->
-    <section>
-      <h2 class="section-title">실험실 · 다목적 변환 도구</h2>
-      <div class="card-grid">
+      <div class="tool-grid">
+        <!-- 첫 번째 줄: 핵심 3개 -->
+        <div class="tool-row">
+          <!-- 카카오톡 영상 변환 -->
+          <article class="card" id="kakao-main">
+            <div class="card-badge card-badge--primary">
+              <span>가장 많이 쓰이는 기능</span>
+            </div>
+            <h2 class="card-title">카카오톡 영상 변환 (MP3/MP4)</h2>
+            <p class="card-desc">
+              카카오톡에서 받은 영상을 그대로 저장하기 어렵거나,
+              2배·4배 보기용 영상만 있을 때 써먹는 변환 도구입니다.
+              재생이 막힌 영상을 컴퓨터에서 다시 활용할 수 있도록 도와줍니다.
+            </p>
+            <div class="card-actions">
+              <a href="/kakao-video-to-mp3.html" class="pill-link">카카오 영상 → MP3 / 저장용 영상</a>
+              <span class="card-hint">브라우저에서 바로 실행</span>
+            </div>
+          </article>
 
-        <!-- 다목적 변환 도구 (실험 중) -->
-        <a href="/beta.html" class="card">
-          <div class="badge badge-muted">
-            실험 중인 기능
-          </div>
-          <div class="card-title">다목적 변환 도구 (실험실)</div>
-          <p class="card-desc">
-            여러 형식을 한 번에 다루기 위해 만든 실험용 변환 도구입니다.<br />
-            상황에 따라 기능이 바뀌거나 추가될 수 있습니다.
-          </p>
-          <div class="card-footer">
-            <span>Beta</span>
-            <a href="/beta.html">
-              실험실 열어보기 <span>↗</span>
-            </a>
-          </div>
-        </a>
+          <!-- 오디오 → MP3 -->
+          <article class="card" id="audio-mp3">
+            <div class="card-badge">
+              <span>일반 음원 변환</span>
+            </div>
+            <h2 class="card-title">영상 오디오 → MP3 변환</h2>
+            <p class="card-desc">
+              녹음파일이나 영상 클립에서 소리만 빠르게 추출하고 싶을 때 쓰는 도구입니다.
+              자막 제작, 강의 복습, 팟캐스트 정리용으로 가볍게 활용할 수 있습니다.
+            </p>
+            <div class="card-actions">
+              <a href="/audio-to-mp3.html" class="pill-link">MP3 추출</a>
+              <span class="card-hint">필요한 부분만 다시 듣기 좋게</span>
+            </div>
+          </article>
 
-        <!-- Audio → MP3 (별도 페이지) -->
-        <a href="/audio-to-mp3.html" class="card">
-          <div class="badge badge-muted">
-            녹음파일 정리
-          </div>
-          <div class="card-title">오디오 파일 → MP3 정리</div>
-          <p class="card-desc">
-            여러 형식의 오디오 파일을 MP3로 정리해서 저장하고 싶을 때 사용하는 도구입니다.  
-            휴대폰·녹음기에서 섞여 있는 파일들을 한 번에 맞춰 둘 수 있습니다.
-          </p>
-          <div class="card-footer">
-            <span>형식 통일</span>
-            <a href="/audio-to-mp3.html">
-              도구 열기 <span>↗</span>
-            </a>
-          </div>
-        </a>
-
-        <!-- 다른 작업들 / 프로젝트 소개 -->
-        <a id="other-works" href="/stamp-extract.html" class="card card-small">
-          <div class="badge badge-muted">
-            FreeComfortLab · 다른 작업들
-          </div>
-          <div class="card-title">다른 작업들 · 프로젝트 소개</div>
-          <p class="card-desc">
-            PDF300, 도장 PNG 추출기처럼 별도의 도메인/서비스로 운영되는 작업들을 모아서 정리한 페이지입니다.<br />
-            “도장 PNG 추출”, “공공기관 제출용 PDF 압축(pdf300)” 같은 도구들을 한 곳에서 안내합니다.
-          </p>
-          <div class="card-footer">
-            <span>소개·안내 전용</span>
-            <a href="/stamp-extract.html">
-              안내 페이지로 이동 <span>↗</span>
-            </a>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- 푸터 -->
-    <footer id="contact">
-      <div>
-        <strong>About · 운영자 소개</strong><br />
-        FreeComfort Studio는 Le Deuxions Studio가 운영하는 작은 사이드 프로젝트입니다.<br />
-        일상적인 작업 흐름을 조금 더 편하게 만드는 도구들을 천천히 늘려갈 예정입니다.
-      </div>
-      <div class="footer-links">
-        <div>
-          문의 이메일<br />
-          <strong>ledeuxions@gmail.com</strong>
+          <!-- 카카오톡 영상 → MP4 재인코딩 -->
+          <article class="card">
+            <div class="card-badge">
+              <span>화질 유지</span>
+            </div>
+            <h2 class="card-title">카카오톡 영상 → MP4 재인코딩</h2>
+            <p class="card-desc">
+              카카오톡 전송용으로 인코딩된 영상을
+              다른 플레이어나 서비스에서 보기 좋게 다시 MP4로 저장해주는 도구입니다.
+              가능하면 화질을 유지하면서 재저장하도록 설계했습니다.
+            </p>
+            <div class="card-actions">
+              <a href="/kakao-video-to-video.html" class="pill-link">공유용 영상 만들기</a>
+              <span class="card-hint">공유·보관용</span>
+            </div>
+          </article>
         </div>
-        <a href="mailto:ledeuxions@gmail.com">
-          메일 보내기 <span>↗</span>
-        </a>
-        <a href="/privacy.html">
-          개인정보처리방침 <span>↗</span>
-        </a>
-      </div>
-    </footer>
 
+        <!-- 두 번째 줄: 실험실 / 다른 작업들 -->
+        <div class="tool-row second" id="other-tools">
+          <!-- 실험실 · 다목적 변환 -->
+          <article class="card">
+            <div class="card-badge">
+              <span>실험 중인 기능</span>
+            </div>
+            <h2 class="card-title">다목적 변환 도구 (실험실)</h2>
+            <p class="card-desc">
+              여러 형식을 한 번에 다루기 위한 변환 도구 실험판입니다.
+              상황에 따라 제공되는 기능이 조금씩 바뀔 예정이며,
+              안정화되면 메인 도구 쪽으로 옮길 계획입니다.
+            </p>
+            <div class="card-actions">
+              <a href="/beta.html" class="pill-link small">Beta 열어 보기</a>
+              <span class="card-hint">형식 통일 · 실험용</span>
+            </div>
+          </article>
+
+          <!-- 다른 작업들 · 프로젝트 소개 -->
+          <article class="card">
+            <div class="card-badge">
+              <span>FreeComfortLab · 다른 작업들</span>
+            </div>
+            <h2 class="card-title">다른 작업들 · 프로젝트 소개</h2>
+            <p class="card-desc">
+              PDF300, 도장 PNG 추출기 같은 별도 서비스나
+              실험 중인 도구들을 한 곳에 모아 정리하는 페이지입니다.
+              아직은 정리 중이지만, 차차 링크와 설명을 채워 넣을 예정입니다.
+            </p>
+            <div class="card-actions">
+              <a href="/convert.html" class="pill-link small">
+                소개 · 모아보기
+              </a>
+              <span class="card-hint">소규모 서비스 전용</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about">
+      <strong>About · 운영자 소개</strong><br />
+      FreeComfort Studio는 Le Deuxions Studio가 운영하는 작은 온라인 작업실입니다.
+      개인 작업과 생활 편의용으로 쓰던 도구들을, 필요한 사람 누구나 가볍게 쓸 수 있도록 공개하고 있습니다.
+      <br /><br />
+      문의·제안은 <a href="mailto:ledeuxions@gmail.com">ledeuxions@gmail.com</a> 으로 보내주시면
+      가능한 선에서 차근차근 반영해 보겠습니다.
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>© 2025 FreeComfort Studio · Le Deuxions</span>
+      <span>
+        <a href="/privacy.html">개인정보처리방침</a> ·
+        <a href="/contact.html">Contact</a>
+      </span>
+    </footer>
   </div>
 </body>
 </html>
